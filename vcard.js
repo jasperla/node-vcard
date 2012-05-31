@@ -68,8 +68,8 @@ function vCard() {
 	this.parsevCard = function(data, cb) {
 		var inserted = 0;
 		var json = {};
+		var version = getVersion(data);
 
-		/* Do the simple bits first, the singleText and extension fields. */
 		for (var f = data.length-1; f >= 0; f--){
 			var fields = data[f].split(":");
 
@@ -78,15 +78,77 @@ function vCard() {
 				continue;
 			}
 
+			/* Do the simple bits first, the singleText and extension fields. */
 			if (u.contains(validFields.singleText, fields[0]) ||
 			    u.contains(validFields.rfc2425, fields[0]) ||
 			    fields[0].match(/^X-.*/)) {
 				json[fields[0]] = fields[1];
+				/* Shrink the data buffer with what has just been added. */
+				data.splice(f, 1);
 				inserted++;
 			}
+		}
 
-			/* XXX: Just shove the rest into json for now, so we don't silently discard it. */
-			json[fields[0]] = fields[1];
+
+		/* Now go through it again, but take care of structured fields. */
+		for (var f = data.length-1; f >= 0; f--) {
+			var fields = data[f].split(":");
+
+			/* Don't bother puting this fluff into the JSON. */
+			if (fields[0] === "BEGIN" || fields[0] === "END") {
+				continue;
+			}
+
+			/*
+			 * Based on the version we're looking at a different way the structured fields
+			 * are declared. For example
+			 * 2.1: TEL;WORK;VOICE:(111) 555-1212
+			 * 3.0: TEL;TYPE=WORK,VOICE:(111) 555-1212
+			 * 4.0: TEL;TYPE="work,voice";VALUE=uri:tel:+1-111-555-1212
+			 *
+			 * These will all result in:
+			 * {
+			 *    "tel":
+			 *    {
+			 *      "type":
+			 *      [
+			 *        "work",
+			 *	  "voice"
+			 *      ],
+			 *      "value": "(111) 555-1212"
+			 *    }
+			 *  }
+			 */
+			if (version === 2.1) {
+				var d = fields[0].split(";");
+				var snippet = {};
+				var type = [];
+
+				/* If we have a structured field, handle the extra
+				   data before the ':' as types. */
+				for (var i = d.length-1; i >= 1; i--){
+					type.push(d[i]);
+				}
+
+				/*
+				 * Some fields can be structured, but are still
+				 * just single. So test for that.
+				 */
+				if (type.length > 0) {
+					snippet.type = type;
+					snippet.value = fields[1];
+					json[d[0]] = snippet;
+				} else {
+					json[d[0]] = fields[1];
+				}
+			} else if (version === 3) {
+
+			} else if (version === 4) {
+
+			} else {
+				/* wut?! */
+				cb("Unknown version encountered: %s", version);
+			}
 		}
 
 		if (inserted > 0) {
