@@ -57,7 +57,7 @@ function vCard() {
 				}
 			});
 		} else {
-			cb(file + " does not contain valid vCard data.");
+			cb("Invalid vCard data.");
 		}
 	}
 
