@@ -6,4 +6,7 @@ card.readFile("tests/vcard.vcf", function(err, json){
 		if (err) {
 			console.error(err);
 		}
+		if (json) {
+			console.log(JSON.stringify(json));
+		}
 });

@@ -1,11 +1,13 @@
-var fs   = require('fs');
-var util = require('util');
-var path = require('path');
-var u = require('underscore');
+var fs       = require('fs');
+var path     = require('path');
+var u        = require('underscore');
+var util     = require('util');
 var validate = require('./lib/validate');
 
 function vCard() {
-	/* Read file from disk and parse it. */
+	/*
+	 * Read file from disk, validate and parse it.
+	 */
 	this.readFile = function(file, cb) {
 		if (path.existsSync(file)) {
 			/* now read the data and pass it to validatevCard() */
@@ -29,7 +31,9 @@ function vCard() {
 		}
 	}
 
-	/* If the vCard data is already in memory, pass it as a String called 'data'. */
+	/*
+	 * Read the vCard data (as String), validate and parse it.
+	 */
 	this.readData = function(card, cb) {
 		/*
 		 * Massage the data from a string to an array,
@@ -58,11 +62,11 @@ function vCard() {
 	}
 
 	/*
-	 * Parse vCard data resident in memory.
+	 * Parse the validated vCard data.
 	 * If an error occurs cb(err, null) get's called, otherwise cb(null, json)
 	 * with the valid JSON data.
 	 */
-	this.parsevCard = function(stream, cb) {
+	this.parsevCard = function(data, cb) {
 	}
 
 	/*
@@ -71,7 +75,7 @@ function vCard() {
 	 * Skipping any X- fields.
 	 */
 	this.validatevCard = function(data) {
-		var version, invalid_field;
+		var invalid_field;
 		var required_elements_found = 0;
 
 		/* Check for valid BEGIN/END fields. */
@@ -97,7 +101,7 @@ function vCard() {
 			}
 		}
 
-		version = parseFloat(version);
+		var version = parseFloat(version);
 		if (isNaN(version)) {
 			return false;
 		}
