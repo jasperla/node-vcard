@@ -25,15 +25,16 @@ Usage
 Please have a look at the stripped demo in bin/vcard-to-json.js. But
 basically you do:
 
+	var util = require('util');
 	var vCard = require('vcard');
 	var card = new vCard();
 	/* Use readFile() if the file is on disk. */
 	card.readFile("path/to/file.vcf", function(err, json) {
-		console.log(JSON.stringify(json));
+		console.log(util.inspect(json));
 	});
 	/* Use readData() otherwise. */
 	card.readData(String_with_vCard_data, function(err. json) {
-		console.log(JSON.stringify(json));
+		console.log(util.inspect(json));
 	}
 
 Known bugs/limitations
