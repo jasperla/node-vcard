@@ -66,6 +66,7 @@ function vCard() {
 	 * with the valid JSON data.
 	 */
 	this.parsevCard = function(data, cb) {
+		var inserted = 0;
 		var json = {};
 
 		/* Do the simple bits first, the singleText and extension fields. */
@@ -81,10 +82,18 @@ function vCard() {
 			    u.contains(validFields.rfc2425, fields[0]) ||
 			    fields[0].match(/^X-.*/)) {
 				json[fields[0]] = fields[1];
+				inserted++;
 			}
+
+			/* XXX: Just shove the rest into json for now, so we don't silently discard it. */
+			json[fields[0]] = fields[1];
 		}
 
-		cb(null, json);
+		if (inserted > 0) {
+			cb(null, json);
+		} else {
+			cb("No JSON elements found?!");
+		}
 	}
 
 	/*
@@ -112,17 +121,7 @@ function vCard() {
 			return false;
 		}
 
-		/* Figure out the version of the vCard format. */
-		for (var f = data.length-1; f >= 0; f--){
-			if (data[f].match(/VERSION/)) {
-				version = data[f].split(":")[1];
-			}
-		}
-
-		var version = parseFloat(version);
-		if (isNaN(version)) {
-			return false;
-		}
+		var version = getVersion(data);
 
 		/* For version 3.0+, we'll also need an N field to be present. */
 		if (version > '2.1') {
@@ -153,6 +152,23 @@ function vCard() {
 		}
 
 		return true;
+	}
+
+	/* Determine the version for the vCard. */
+	getVersion = function(data) {
+		/* Figure out the version of the vCard format. */
+		for (var f = data.length-1; f >= 0; f--){
+			if (data[f].match(/VERSION/)) {
+				version = data[f].split(":")[1];
+			}
+		}
+
+		var version = parseFloat(version);
+		if (isNaN(version)) {
+			return 0;
+		} else {
+			return version;
+		}
 	}
 };
 
