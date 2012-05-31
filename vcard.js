@@ -6,7 +6,7 @@ var validate = require('./lib/validate');
 
 function vCard() {
 	/* Read file from disk and parse it. */
-	this.parseFile = function(file, cb) {
+	this.readFile = function(file, cb) {
 		if (path.existsSync(file)) {
 			/* now read the data and pass it to validatevCard() */
 			var data;
@@ -16,33 +16,44 @@ function vCard() {
 				cb(error);
 			}
 
-			/*
-			 * Massage the data from a string to an array,
-			 * which makes parsing it later on a lot easier.
-			 * Also remove any empty lines.
-			 */
-			data = data.split("\n");
-			for (var i = data.length-1; i >= 0; i--) {
-				if (data[i] == "") {
-					data.splice(i, 1);
-					break;
+			this.readData(data, function(err, json) {
+				if (err) {
+					cb(err);
+				} else {
+					cb(null, json);
 				}
-			}
+			});
 
-			if (this.validatevCard(data)){
-				/* valid */
-				this.parsevCard(data, function(err, json){
-					if (err) {
-						cb(err);
-					} else {
-						cb(null, json);
-					}
-				});
-			} else {
-				cb(file + " does not contain valid vCard data.");
-			}
 		} else {
 			cb(file + " not found. Does it exist?");
+		}
+	}
+
+	/* If the vCard data is already in memory, pass it as a String called 'data'. */
+	this.readData = function(card, cb) {
+		/*
+		 * Massage the data from a string to an array,
+		 * which makes parsing it later on a lot easier.
+		 * Also remove any empty lines.
+		 */
+		var data = card.split("\n");
+		for (var i = data.length-1; i >= 0; i--) {
+			if (data[i] == "") {
+				data.splice(i, 1);
+				break;
+			}
+		}
+		if (this.validatevCard(data)){
+			/* valid */
+			this.parsevCard(data, function(err, json){
+				if (err) {
+					cb(err);
+				} else {
+					cb(null, json);
+				}
+			});
+		} else {
+			cb(file + " does not contain valid vCard data.");
 		}
 	}
 
