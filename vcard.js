@@ -110,38 +110,19 @@ function vCard() {
 			 * These will all result in:
 			 *  TEL: { type: [ 'VOICE', 'WORK' ], value: '(111) 555-1212' },
 			 */
-			if (version === 2.1) {
-				var d = fields[0].split(";");
-				var snippet = {};
-				var type = [];
 
-				/* If we have a structured field, handle the extra
-				   data before the ':' as types. */
-				for (var i = d.length-1; i >= 1; i--){
-					type.push(d[i]);
-				}
+			var d = fields[0].split(";");
+			var snippet = {};
+			var type = [];
 
-				/*
-				 * Some fields can be structured, but are still
-				 * just single. So test for that.
-				 */
-				if (type.length > 0) {
-					snippet.type = type;
-					snippet.value = fields[1];
-					json[d[0]] = snippet;
-				} else {
-					json[d[0]] = fields[1];
-				}
-			} else if (version === 3) {
-				var d = fields[0].split(";");
-				var snippet = {};
-				var type = [];
-
+			if (version == 3.0) {
 				/* Strip off 'TYPE' argument before doing anything else. */
 				if (d[1]) {
 					d[1] = d[1].replace(/TYPE=/g, '');
 				}
+			}
 
+			if (version === 2.1 || version == '3.0') {
 				/* If we have a structured field, handle the extra
 				   data before the ':' as types. */
 				for (var i = d.length-1; i >= 1; i--){
@@ -159,11 +140,7 @@ function vCard() {
 				} else {
 					json[d[0]] = fields[1];
 				}
-
 			} else if (version === 4) {
-				var d = fields[0].split(";");
-				var snippet = {};
-				var type = [];
 				var label = [];
 				var value = [];
 
