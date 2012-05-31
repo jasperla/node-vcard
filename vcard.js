@@ -48,7 +48,6 @@ function vCard() {
 			}
 		}
 		if (this.validatevCard(data)){
-			/* valid */
 			this.parsevCard(data, function(err, json){
 				if (err) {
 					cb(err);
@@ -78,11 +77,9 @@ function vCard() {
 				continue;
 			}
 
-			if (u.contains(validFields.singleText, fields[0])) {
-				json[fields[0]] = fields[1];
-			}
-
-			if (fields[0].match(/^X-.*/)) {
+			if (u.contains(validFields.singleText, fields[0]) ||
+			    u.contains(validFields.rfc2425, fields[0]) ||
+			    fields[0].match(/^X-.*/)) {
 				json[fields[0]] = fields[1];
 			}
 		}
