@@ -1,8 +1,8 @@
-var fs       = require('fs');
-var path     = require('path');
-var u        = require('underscore');
-var util     = require('util');
-var fields   = require('./lib/fields');
+var fs            = require('fs');
+var path          = require('path');
+var u             = require('underscore');
+var util          = require('util');
+var validFields   = require('./lib/fields');
 
 function vCard() {
 	/*
@@ -67,6 +67,27 @@ function vCard() {
 	 * with the valid JSON data.
 	 */
 	this.parsevCard = function(data, cb) {
+		var json = {};
+
+		/* Do the simple bits first, the singleText and extension fields. */
+		for (var f = data.length-1; f >= 0; f--){
+			var fields = data[f].split(":");
+
+			/* Don't bother puting this fluff into the JSON. */
+			if (fields[0] === "BEGIN" || fields[0] === "END") {
+				continue;
+			}
+
+			if (u.contains(validFields.singleText, fields[0])) {
+				json[fields[0]] = fields[1];
+			}
+
+			if (fields[0].match(/^X-.*/)) {
+				json[fields[0]] = fields[1];
+			}
+		}
+
+		cb(null, json);
 	}
 
 	/*
@@ -124,11 +145,11 @@ function vCard() {
 		 */
 		for (var f = data.length-1; f >= 0; f--){
 			var field = data[f].replace(/(:|;).*/g, '');
-			if (!(u.contains(fields.singleText, field) ||
-			      u.contains(fields.multipleText, field) ||
-			      u.contains(fields.rfc2425, field) ||
-			      u.contains(fields.singleBinary, field) ||
-			      u.contains(fields.structured, field) ||
+			if (!(u.contains(validFields.singleText, field) ||
+			      u.contains(validFields.multipleText, field) ||
+			      u.contains(validFields.rfc2425, field) ||
+			      u.contains(validFields.singleBinary, field) ||
+			      u.contains(validFields.structured, field) ||
 			      field.match(/^X-.*/))){
 				return false;
 			}

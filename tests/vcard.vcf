@@ -1,6 +1,6 @@
 BEGIN:VCARD
 VERSION:3.0
-X-POO:POO
+X-FOO:FOO
 N:Gump;Forrest
 FN:Forrest Gump
 ORG:Bubba Gump Shrimp Co.
