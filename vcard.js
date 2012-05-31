@@ -2,7 +2,7 @@ var fs       = require('fs');
 var path     = require('path');
 var u        = require('underscore');
 var util     = require('util');
-var validate = require('./lib/validate');
+var fields   = require('./lib/fields');
 
 function vCard() {
 	/*
@@ -124,8 +124,11 @@ function vCard() {
 		 */
 		for (var f = data.length-1; f >= 0; f--){
 			var field = data[f].replace(/(:|;).*/g, '');
-			if (!(u.contains(validate.simple_fields, field) ||
-			      u.contains(validate.structured_fields, field) ||
+			if (!(u.contains(fields.singleText, field) ||
+			      u.contains(fields.multipleText, field) ||
+			      u.contains(fields.rfc2425, field) ||
+			      u.contains(fields.singleBinary, field) ||
+			      u.contains(fields.structured, field) ||
 			      field.match(/^X-.*/))){
 				return false;
 			}
