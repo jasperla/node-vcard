@@ -16,17 +16,27 @@ Maybe in the future, it'll be ours...
 Installation
 ------------
 
+Not yet, but soon via:
+
 	npm install node-vcard
+
 
 Usage
 -----
 
-An example usage is provided in bin/vcard-to-json.js but it's essense
-is reproduced here:
+Please have a look at the stripped demo in bin/vcard-to-json.js. But
+basically you do:
 
 	var vCard = require('vcard');
-	var card  = new vCard();
-	card.parseFile("input.vcf");
+	var card = new vCard();
+	/* Use readFile() if the file is on disk. */
+	card.readFile("path/to/file.vcf", function(err, json) {
+		console.log(JSON.stringify(json));
+	});
+	/* Use readData() otherwise. */
+	card.readData(String_with_vCard_data, function(err. json) {
+		console.log(JSON.stringify(json));
+	}
 
 Author
 -------
