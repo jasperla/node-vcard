@@ -92,6 +92,7 @@ function vCard() {
 
 		/* Now go through it again, but take care of structured fields. */
 		for (var f = data.length-1; f >= 0; f--) {
+			/* XXX: Don't split on http:// .. */
 			var fields = data[f].split(":");
 
 			/* Don't bother puting this fluff into the JSON. */
@@ -107,17 +108,7 @@ function vCard() {
 			 * 4.0: TEL;TYPE="work,voice";VALUE=uri:tel:+1-111-555-1212
 			 *
 			 * These will all result in:
-			 * {
-			 *    "tel":
-			 *    {
-			 *      "type":
-			 *      [
-			 *        "work",
-			 *	  "voice"
-			 *      ],
-			 *      "value": "(111) 555-1212"
-			 *    }
-			 *  }
+			 *  TEL: { type: [ 'VOICE', 'WORK' ], value: '(111) 555-1212' },
 			 */
 			if (version === 2.1) {
 				var d = fields[0].split(";");
@@ -142,8 +133,71 @@ function vCard() {
 					json[d[0]] = fields[1];
 				}
 			} else if (version === 3) {
+				var d = fields[0].split(";");
+				var snippet = {};
+				var type = [];
+
+				/* Strip off 'TYPE' argument before doing anything else. */
+				if (d[1]) {
+					d[1] = d[1].replace(/TYPE=/g, '');
+				}
+
+				/* If we have a structured field, handle the extra
+				   data before the ':' as types. */
+				for (var i = d.length-1; i >= 1; i--){
+					type.push(d[i]);
+				}
+
+				/*
+				 * Some fields can be structured, but are still
+				 * just single. So test for that.
+				 */
+				if (type.length > 0) {
+					snippet.type = type;
+					snippet.value = fields[1];
+					json[d[0]] = snippet;
+				} else {
+					json[d[0]] = fields[1];
+				}
 
 			} else if (version === 4) {
+				var d = fields[0].split(";");
+				var snippet = {};
+				var type = [];
+				var label = [];
+				var value = [];
+
+				/* Use the TYPE, LABEL and VALUE fields to pop extra data into the snippet. */
+				for (var i = d.length-1; i >= 1; i--){
+					if (d[i].match(/TYPE/)) {
+						/* This can be a nested type..split it. */
+						var t = d[i].replace(/TYPE=/g, '').replace(/\"/g, '').split(",");
+						for (var j = t.length -1; j >= 0; j--) {
+							type.push(t[j]);
+						}
+					} else if (d[i].match(/LABEL/)) {
+						label.push(d[i].replace(/LABEL=/g, ''));
+					} else if (d[i].match(/VALUE/)) {
+						value.push(d[i].replace(/VALUE=/g, ''));
+					}
+				}
+
+				/*
+				 * Some fields can be structured, but are still
+				 * just single. So test for that.
+				 */
+				if (type.length > 0) {
+					snippet.type = type;
+					if (label.length > 0) {
+						snippet.value = label[0];
+					} else {
+						snippet.value = fields[2];
+					}
+					json[d[0]] = snippet;
+				} else {
+					/* Be sure to remove any left over control chars. */
+					json[d[0]] = fields[1].replace(/;/g, '');
+				}
 
 			} else {
 				/* wut?! */
@@ -196,6 +250,8 @@ function vCard() {
 				return false;
 			}
 		}
+
+		/* XXX: If we run into a line that doesn't start with a field name, figure out what to do. */
 
 		/*
 		 * Walk through all the fields, and check if any of the fields aren't listed

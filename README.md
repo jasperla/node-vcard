@@ -38,6 +38,13 @@ basically you do:
 		console.log(JSON.stringify(json));
 	}
 
+Known bugs/limitations
+----------------------
+
+- Entries spanning multiple lines are currently treated as incorrect data.
+- Multiple entries (such as two TEL) will result in only the first one
+  being recorded into the final JSON.
+
 Author
 -------
 
