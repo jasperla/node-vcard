@@ -16,9 +16,7 @@ Maybe in the future, it'll be ours...
 Installation
 ------------
 
-Not yet, but soon via:
-
-	npm install node-vcard
+	npm install vcard
 
 
 Usage
