@@ -1,0 +1,29 @@
+{
+  "name" : "vcard",
+  "version" : "0.0.1",
+  "description" : "parse vCard into JSON",
+  "homepage" : "http://github.com/jasperla/node-vcard",
+  "author": {
+    "name": "Jasper Lievisse Adriaanse",
+    "email": "jasper@humppa.nl"
+  },
+  "license": "MIT/X11",
+  "keywords" : [
+    "vcard",
+    "vcf",
+    "vCrd",
+    "json"
+  ],
+  "dependencies": {
+    "underscore": "*"
+  },
+  "engines": {
+    "node": ">= 0.6.0"
+  },
+  "devDependencies": {},
+  "main" : "vcard.js",
+  "repository" : {
+    "type": "git",
+    "url": "git://github.com/jasperla/node-vcard.git"
+  }
+}
