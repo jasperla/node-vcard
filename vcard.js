@@ -153,7 +153,8 @@ function vCard() {
 							type.push(t[j]);
 						}
 					} else if (d[i].match(/LABEL/)) {
-						label.push(d[i].replace(/LABEL=/g, ''));
+						/* Certain labels are quoted, so unquote them now. */
+						label.push(d[i].replace(/LABEL=/g, '').replace(/\"/g, ''));
 					} else if (d[i].match(/VALUE/)) {
 						value.push(d[i].replace(/VALUE=/g, ''));
 					}
