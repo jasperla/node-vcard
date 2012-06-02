@@ -1,3 +1,5 @@
+"use strict";
+
 var fs            = require('fs');
 var path          = require('path');
 var u             = require('underscore');
@@ -8,7 +10,7 @@ function vCard() {
 	/*
 	 * Read file from disk, validate and parse it.
 	 */
-	this.readFile = function(file, cb) {
+	this.readFile = function (file, cb) {
 		if (path.existsSync(file)) {
 			/* now read the data and pass it to validatevCard() */
 			var data;
@@ -18,7 +20,7 @@ function vCard() {
 				cb(error);
 			}
 
-			this.readData(data, function(err, json) {
+			this.readData(data, function (err, json) {
 				if (err) {
 					cb(err);
 				} else {
@@ -34,7 +36,7 @@ function vCard() {
 	/*
 	 * Read the vCard data (as String), validate and parse it.
 	 */
-	this.readData = function(card, cb) {
+	this.readData = function (card, cb) {
 		/*
 		 * Massage the data from a string to an array,
 		 * which makes parsing it later on a lot easier.
@@ -48,7 +50,7 @@ function vCard() {
 			}
 		}
 		if (this.validatevCard(data)){
-			this.parsevCard(data, function(err, json){
+			this.parsevCard(data, function (err, json){
 				if (err) {
 					cb(err);
 				} else {
@@ -65,10 +67,10 @@ function vCard() {
 	 * If an error occurs cb(err, null) get's called, otherwise cb(null, json)
 	 * with the valid JSON data.
 	 */
-	this.parsevCard = function(data, cb) {
+	this.parsevCard = function (data, cb) {
 		var inserted = 0;
 		var json = {};
-		var version = getVersion(data);
+		var version = this.getVersion(data);
 
 		for (var f = data.length-1; f >= 0; f--){
 			var fields = data[f].split(":");
@@ -195,7 +197,7 @@ function vCard() {
 	 * based on that handle the fields that may exist.
 	 * Skipping any X- fields.
 	 */
-	this.validatevCard = function(data) {
+	this.validatevCard = function (data) {
 		var invalid_field;
 		var required_elements_found = 0;
 
@@ -215,7 +217,7 @@ function vCard() {
 			return false;
 		}
 
-		var version = getVersion(data);
+		var version = this.getVersion(data);
 
 		/* For version 3.0+, we'll also need an N field to be present. */
 		if (version > '2.1') {
@@ -251,7 +253,7 @@ function vCard() {
 	}
 
 	/* Determine the version for the vCard. */
-	getVersion = function(data) {
+	this.getVersion = function (data) {
 		/* Figure out the version of the vCard format. */
 		for (var f = data.length-1; f >= 0; f--){
 			if (data[f].match(/VERSION/)) {
