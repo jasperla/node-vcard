@@ -140,7 +140,12 @@ function vCard() {
 					snippet.value = fields[1];
 					json[d[0]] = snippet;
 				} else {
-					json[d[0]] = fields[1];
+					/* Be sure to remove any left over control chars, but give a special treat to N */
+					if (d[0] === 'N') {
+						json[d[0]] = fields[1].replace(/;+$/g, '').replace(/;/, ', ').replace(/ $/, '');
+					} else {
+						json[d[0]] = fields[1].replace(/;/g, ' ');
+					}
 				}
 			} else if (version === 4) {
 				var label = [];
@@ -175,10 +180,13 @@ function vCard() {
 					}
 					json[d[0]] = snippet;
 				} else {
-					/* Be sure to remove any left over control chars. */
-					json[d[0]] = fields[1].replace(/;/g, '');
+					/* Be sure to remove any left over control chars, but give a special treat to N */
+					if (d[0] === 'N') {
+						json[d[0]] = fields[1].replace(/;+$/g, '').replace(/;/, ', ').replace(/ $/, '');
+					} else {
+						json[d[0]] = fields[1].replace(/;/g, ' ');
+					}
 				}
-
 			} else {
 				/* wut?! */
 				cb("Unknown version encountered: %s", version);
