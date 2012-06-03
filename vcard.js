@@ -70,7 +70,7 @@ function vCard() {
 	this.parsevCard = function (data, cb) {
 		var inserted = 0;
 		var json = {};
-		var version = this.getVersion(data);
+		var version = getVersion(data);
 
 		for (var f = data.length-1; f >= 0; f--){
 			var fields = data[f].split(":");
@@ -225,7 +225,7 @@ function vCard() {
 			return false;
 		}
 
-		var version = this.getVersion(data);
+		var version = getVersion(data);
 
 		/* For version 3.0+, we'll also need an N field to be present. */
 		if (version > '2.1') {
@@ -261,7 +261,7 @@ function vCard() {
 	}
 
 	/* Determine the version for the vCard. */
-	this.getVersion = function (data) {
+	var getVersion = function (data) {
 		/* Figure out the version of the vCard format. */
 		for (var f = data.length-1; f >= 0; f--){
 			if (data[f].match(/VERSION/)) {

@@ -1,6 +1,6 @@
 {
   "name" : "vcard",
-  "version" : "0.0.5",
+  "version" : "0.0.6",
   "description" : "parse vCard into JSON",
   "homepage" : "http://github.com/jasperla/node-vcard",
   "author": {
