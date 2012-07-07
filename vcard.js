@@ -11,7 +11,7 @@ function vCard() {
 	 * Read file from disk, validate and parse it.
 	 */
 	this.readFile = function (file, cb) {
-		if (path.existsSync(file)) {
+		if (fs.existsSync(file)) {
 			/* now read the data and pass it to validatevCard() */
 			var data;
 			try {
