@@ -18,7 +18,6 @@ Installation
 
 	npm install vcard
 
-
 Usage
 -----
 
