@@ -22,7 +22,7 @@
   },
   "devDependencies": {},
   "main" : "vcard.js",
-  "bin" : "./bin/vard-to-json.js",
+  "bin" : "./bin/vcard-to-json.js",
   "repository" : {
     "type": "git",
     "url": "git://github.com/jasperla/node-vcard.git"
