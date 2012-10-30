@@ -42,7 +42,7 @@ function vCard() {
 		 * which makes parsing it later on a lot easier.
 		 * Also remove any empty lines.
 		 */
-		var data = card.split("\n");
+		var data = card.split(/\r\n|\r|\n/);
 		for (var i = data.length-1; i >= 0; i--) {
 			if (data[i] == "") {
 				data.splice(i, 1);
