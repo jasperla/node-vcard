@@ -1,0 +1,88 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Node-vcard by jasperla</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1 class="header">Node-vcard</h1>
+        <p class="header">parse vCard files/data into JSON</p>
+
+        <ul>
+          <li class="download"><a class="buttons" href="https://github.com/jasperla/node-vcard/zipball/master">Download ZIP</a></li>
+          <li class="download"><a class="buttons" href="https://github.com/jasperla/node-vcard/tarball/master">Download TAR</a></li>
+          <li><a class="buttons github" href="https://github.com/jasperla/node-vcard">View On GitHub</a></li>
+        </ul>
+
+        <p class="header">This project is maintained by <a class="header name" href="https://github.com/jasperla">jasperla</a></p>
+
+
+      </header>
+      <section>
+        <h1>node-vcard</h1>
+
+<h2>Introduction</h2>
+
+<p>node-vcard parses vCard data into nice JSON. It can read files from
+disk and then parse them with vCard.parseFile(), or the vCard data
+can be passed to it for direct parsing with vCard.parse().</p>
+
+<p>This module only does basic validation of the files, so if you have
+NICKNAME field (added in version 3.0) in a 2.1 file and this causes
+issues elsewhere in the chain, it's your responsibility for now.
+Maybe in the future, it'll be ours...</p>
+
+<h2>Installation</h2>
+
+<pre><code>npm install vcard
+</code></pre>
+
+<h2>Usage</h2>
+
+<p>Please have a look at the stripped demo in bin/vcard-to-json.js. But
+basically you do:</p>
+
+<pre><code>var util = require('util');
+var vCard = require('vcard');
+var card = new vCard();
+/* Use readFile() if the file is on disk. */
+card.readFile("path/to/file.vcf", function(err, json) {
+    console.log(util.inspect(json));
+});
+/* Use readData() otherwise. */
+card.readData(String_with_vCard_data, function(err. json) {
+    console.log(util.inspect(json));
+}
+</code></pre>
+
+<h2>Known bugs/limitations</h2>
+
+<ul>
+<li>Entries spanning multiple lines are currently treated as incorrect data.</li>
+<li>Multiple entries (such as two TEL) will result in only the first one
+being recorded into the final JSON.</li>
+</ul><h2>Author</h2>
+
+<p>Copyright (C) 2012 Jasper Lievisse Adriaanse <a href="mailto:jasper@humppa.nl">jasper@humppa.nl</a></p>
+
+<p>Distributed under the MIT/X11 license (see the file COPYING)</p>
+      </section>
+      <footer>
+        <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
+      </footer>
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+		
+  </body>
+</html>
