@@ -35,6 +35,24 @@ basically you do:
 	card.readData(String_with_vCard_data, function(err. json) {
 		console.log(util.inspect(json));
 	}
+	
+Running the Unit Tests
+----------------------
+
+Run the following commands to run the tests:
+
+    npm install
+    grunt
+
+The tests will be run as soon as you change code or the vCards in the `spec/` folder.
+
+To add a test, simply add a vCard to the `spec/` folder with the following name convention: `vCard-version-bug.vcf`
+
+### Testing with private vCards
+
+If you want to bulk test you private vCards without running into the risk of commiting them, create the following directory and add the files in there. They will be ignored by `git`.
+
+    mkdir pec/private-vcards
 
 Known bugs/limitations
 ----------------------
