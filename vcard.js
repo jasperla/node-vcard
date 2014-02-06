@@ -45,9 +45,10 @@ function vCard() {
 		data = card.split(/\r\n(?=\S)|\r(?=\S)|\n(?=\S)/);
 
 		for (i = data.length-1; i >= 0; i--) {
-			// Remove remaining empty lines,
-			// e.g. in Base64 PHOTOS or at the end.
-			data[i] = data[i].replace(/\r\n\s*|\r\s*|\n\s*/g, '')
+			// Remove the following things:
+			// * empty lines, e.g. in Base64 PHOTOS or at the end
+			// * Apple's strange 'item1.' prefix.
+			data[i] = data[i].replace(/^item\d+\.|\r\n\s*|\r\s*|\n\s*/g, '')
 		}
 		validationError = this.getValidationError(data)
 		if (validationError){
