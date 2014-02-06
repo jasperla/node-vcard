@@ -12,7 +12,7 @@ function vCard() {
 	 */
 	this.readFile = function (file, cb) {
 		if (fs.existsSync(file)) {
-			/* now read the data and pass it to validatevCard() */
+			/* now read the data and pass it to getValidationError() */
 			var data;
 			try {
 				data = fs.readFileSync(file, 'ascii');
