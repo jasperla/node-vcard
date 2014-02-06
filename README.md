@@ -52,7 +52,7 @@ To add a test, simply add a vCard to the `spec/` folder with the following name 
 
 If you want to bulk test you private vCards without running into the risk of commiting them, create the following directory and add the files in there. They will be ignored by `git`.
 
-    mkdir pec/private-vcards
+    mkdir spec/private-vcards
 
 Known bugs/limitations
 ----------------------
