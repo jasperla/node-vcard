@@ -8,21 +8,18 @@ beforeEach(function(){
     vCard = new VCard();
 });
 
-describe('Setup', function () {
-    it('VCard is a constructor function.', function(){
-        assert.func(VCard);
-    });
-
-});
-describe('VCard', function(){
+testAllCardsInFolder = function (folderPath) {
+    if (!fs.existsSync(folderPath)) {
+        return
+    }
 
     fs.readdirSync(
-        './spec/'
+        folderPath
     ).filter(function (path) {
         return path.match(/.vcf$/)
     }).forEach(function (path) {
         describe(path, function(){
-            var vCardString = fs.readFileSync('./spec/' + path, {encoding: 'ascii'})
+            var vCardString = fs.readFileSync(folderPath + path, {encoding: 'ascii'})
 
             it('is loaded into memory', function () {
                 assert.string(vCardString);
@@ -36,4 +33,18 @@ describe('VCard', function(){
         })
 
     })
+}
+
+describe('Setup', function () {
+    it('VCard is a constructor function.', function(){
+        assert.func(VCard);
+    });
+
+});
+describe('VCard', function(){
+
+    testAllCardsInFolder('./spec/');
+    testAllCardsInFolder('./spec/private-vcards/');
+
+
 });
