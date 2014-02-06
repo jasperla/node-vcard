@@ -3,7 +3,7 @@ module.exports = function(grunt) {
   grunt.initConfig({
     watch: {
       javascript: {
-        files: ["vcard.js", "bin/*.js", "spec/**/*"],
+        files: ['vcard.js', 'bin/*.js', 'spec/**/*', 'lib/*'],
         tasks: "jasmine_node"
       }
     },
