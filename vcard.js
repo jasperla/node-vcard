@@ -37,17 +37,16 @@ function vCard() {
 	 * Read the vCard data (as String), validate and parse it.
 	 */
 	this.readData = function (card, cb) {
-		/*
-		 * Massage the data from a string to an array,
-		 * which makes parsing it later on a lot easier.
-		 * Also remove any empty lines.
-		 */
-		var data = card.split(/\r\n|\r|\n/);
+		// Massage the data from a string to an array,
+		// which makes parsing it later on a lot easier.
+		// We only split if a character is directly after a
+		// newline because of Base64 PHOTOS.
+		var data = card.split(/\r\n(?=\S)|\r(?=\S)|\n(?=\S)/);
+
 		for (var i = data.length-1; i >= 0; i--) {
-			if (data[i] == "") {
-				data.splice(i, 1);
-				break;
-			}
+			// Remove remaining empty lines,
+			// e.g. in Base64 PHOTOS or at the end.
+			data[i] = data[i].replace(/\r\n\s*|\r\s*|\n\s*/g, '')
 		}
 		if (this.validatevCard(data)){
 			this.parsevCard(data, function (err, json){
