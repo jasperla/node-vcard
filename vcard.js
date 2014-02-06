@@ -37,18 +37,22 @@ function vCard() {
 	 * Read the vCard data (as String), validate and parse it.
 	 */
 	this.readData = function (card, cb) {
+		var validationError, data, i;
 		// Massage the data from a string to an array,
 		// which makes parsing it later on a lot easier.
 		// We only split if a character is directly after a
 		// newline because of Base64 PHOTOS.
-		var data = card.split(/\r\n(?=\S)|\r(?=\S)|\n(?=\S)/);
+		data = card.split(/\r\n(?=\S)|\r(?=\S)|\n(?=\S)/);
 
-		for (var i = data.length-1; i >= 0; i--) {
+		for (i = data.length-1; i >= 0; i--) {
 			// Remove remaining empty lines,
 			// e.g. in Base64 PHOTOS or at the end.
 			data[i] = data[i].replace(/\r\n\s*|\r\s*|\n\s*/g, '')
 		}
-		if (this.validatevCard(data)){
+		validationError = this.getValidationError(data)
+		if (validationError){
+			cb("Invalid vCard data: " + validationError);
+		} else {
 			this.parsevCard(data, function (err, json){
 				if (err) {
 					cb(err);
@@ -56,8 +60,6 @@ function vCard() {
 					cb(null, json);
 				}
 			});
-		} else {
-			cb("Invalid vCard data.");
 		}
 	}
 
@@ -204,13 +206,13 @@ function vCard() {
 	 * based on that handle the fields that may exist.
 	 * Skipping any X- fields.
 	 */
-	this.validatevCard = function (data) {
+	this.getValidationError = function (data) {
 		var invalid_field;
 		var required_elements_found = 0;
 
 		/* Check for valid BEGIN/END fields. */
 		if (data[0] !== "BEGIN:VCARD" || data[data.length-1] !== "END:VCARD") {
-			return false;
+			return 'BEGIN:VCARD or END:VCARD missing.';
 		}
 
 		/* Ensure at least the needed fields (VERSION, N and FN) exist, needed in all versions. */
@@ -221,7 +223,7 @@ function vCard() {
 		}
 
 		if (required_elements_found != '2') {
-			return false;
+			return 'One or more required elements are missing (VERSION and FN)';
 		}
 
 		var version = getVersion(data);
@@ -234,7 +236,7 @@ function vCard() {
 				}
 			}
 			if (required_elements_found != '3') {
-				return false;
+				return 'One or more required elements are missing (VERSION, N and FN)';
 			}
 		}
 
@@ -252,11 +254,9 @@ function vCard() {
 			      u.contains(validFields.singleBinary, field) ||
 			      u.contains(validFields.structured, field) ||
 			      field.match(/^X-.*/))){
-				return false;
+				return 'Invalid field found: `' + field + '`';
 			}
 		}
-
-		return true;
 	}
 
 	/* Determine the version for the vCard. */
