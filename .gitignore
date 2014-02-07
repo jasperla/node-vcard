@@ -1,2 +1,4 @@
 node_modules
 /spec/private-vcards
+/.grunt/
+/_SpecRunner.html
