@@ -6,7 +6,7 @@ Introduction
 
 node-vcard parses vCard data into nice JSON. It can read files from
 disk and then parse them with vCard.parseFile(), or the vCard data
-can be passed to it for direct parsing with vCard.parse().
+can be passed to it for direct parsing with vCard.parsevCard().
 
 This module only does basic validation of the files, so if you have
 NICKNAME field (added in version 3.0) in a 2.1 file and this causes
@@ -26,16 +26,16 @@ basically you do:
 
 	var util = require('util');
 	var vCard = require('vcard');
-	var card = new vCard();
+
 	/* Use readFile() if the file is on disk. */
-	card.readFile("path/to/file.vcf", function(err, json) {
-		console.log(util.inspect(json));
-	});
+	var json = vCard.readFile("path/to/file.vcf");
+	console.log(util.inspect(json));
+
 	/* Use readData() otherwise. */
-	card.readData(String_with_vCard_data, function(err. json) {
-		console.log(util.inspect(json));
-	}
-	
+	var json = vCard.readData(String_with_vCard_data)
+	console.log(util.inspect(json));
+
+
 Running the Unit Tests
 ----------------------
 
