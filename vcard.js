@@ -37,31 +37,71 @@ function vCard() {
 	 * Read the vCard data (as String), validate and parse it.
 	 */
 	this.readData = function (card, cb) {
-		var validationError, data, i;
+		var vCards, vCardsParsed, errors, validationError, data, i, vCardCount;
 		// Massage the data from a string to an array,
 		// which makes parsing it later on a lot easier.
 		// We only split if a character is directly after a
 		// newline because of Base64 PHOTOS.
 		data = card.split(/\r\n(?=\S)|\r(?=\S)|\n(?=\S)/);
 
+		// Support for multiple vcards into a file
+		// gmail exports the contacts like that:
+		// https://support.google.com/mail/answer/1069522?hl=en (export & backup)
+		//
+		// An array of array elements of lines, in the following format:
+		// [['BEGIN:VCARD', ... , 'END:VCARD'], ['BEGIN:VCARD', ... , 'END:VCARD']]
+		//
+		// A normal vcard file should end up creating just a single element vcards array
+		vCards = [[]];
+		vCardCount = 0;
 		for (i = data.length-1; i >= 0; i--) {
 			// Remove the following things:
 			// * empty lines, e.g. in Base64 PHOTOS or at the end
 			// * Apple's strange 'item1.' prefix.
 			data[i] = data[i].replace(/^item\d+\.|\r\n\s*|\r\s*|\n\s*/g, '')
+
+			// Push each line into the current vCard element
+			vCards[vCardCount].unshift(data[i]);
+
+			// scenario: line is vcard start indicator but is not the first line
+			// action: push a new vcard element into the array to push lines into
+			if (data[i] === 'BEGIN:VCARD' && i !== 0) {
+				++vCardCount
+				vCards.push([]);
+			}
 		}
-		validationError = this.getValidationError(data)
-		if (validationError){
-			cb("Invalid vCard data: " + validationError);
-		} else {
-			this.parsevCard(data, function (err, json){
-				if (err) {
-					cb(err);
+
+		errors = [];
+		vCardsParsed = [];
+		vCardCount = 0;
+		console.info('vCards: ', vCards);
+		for (i=0; i<vCards.length; ++i) {
+			validationError = this.getValidationError(vCards[i])
+			if (validationError) {
+				errors.push(validationError);
+				tryCallback();
+			} else {
+				this.parsevCard(vCards[i], function (err, json) {
+					if (err) {
+						errors.push(err);
+					} else if (json) {
+						vCardsParsed.push(json);
+					}
+					tryCallback();
+				});
+			}
+		}
+
+		function tryCallback() {
+			if (++vCardCount === vCards.length) {
+				if (errors.length > 0) {
+					cb(errors.length === 1 ? errors[0] : errors);
 				} else {
-					cb(null, json);
+					cb(null, vCardsParsed.length === 1 ? vCardsParsed[0] : vCardsParsed)
 				}
-			});
+			}
 		}
+
 	}
 
 	/*
