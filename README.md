@@ -32,9 +32,9 @@ basically you do:
 		console.log(util.inspect(json));
 	});
 	/* Use readData() otherwise. */
-	card.readData(String_with_vCard_data, function(err. json) {
+	card.readData(String_with_vCard_data, function(err, json) {
 		console.log(util.inspect(json));
-	}
+	});
 	
 Running the Unit Tests
 ----------------------
