@@ -15,7 +15,7 @@ function vCard() {
 			/* now read the data and pass it to getValidationError() */
 			var data;
 			try {
-				data = fs.readFileSync(file, 'ascii');
+				data = fs.readFileSync(file, 'utf-8');
 			} catch (error) {
 				cb(error);
 			}
