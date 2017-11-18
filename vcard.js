@@ -74,7 +74,7 @@ function vCard() {
 		errors = [];
 		vCardsParsed = [];
 		vCardCount = 0;
-		console.info('vCards: ', vCards);
+
 		for (i=0; i<vCards.length; ++i) {
 			validationError = this.getValidationError(vCards[i])
 			if (validationError) {
