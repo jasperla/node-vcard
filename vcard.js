@@ -109,7 +109,7 @@ function vCard() {
     if(json[key]){
       if(value.type && value.type.length > 0){
         let found = value.type.find(t=>t.indexOf('=')!==-1) || value.type[0];
-        const newKey = key+'-'+found;
+        const newKey = key+'-'+found.replace(/TYPE=/g, '');
         if(!json[newKey]){
           json[newKey]=value;
           return;
