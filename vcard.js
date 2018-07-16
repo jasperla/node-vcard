@@ -65,7 +65,7 @@ function vCard() {
 
 			// scenario: line is vcard start indicator but is not the first line
 			// action: push a new vcard element into the array to push lines into
-			if (data[i] === 'BEGIN:VCARD' && i !== 0) {
+			if (data[i].toUpperCase() === 'BEGIN:VCARD' && i !== 0) {
 				++vCardCount
 				vCards.push([]);
 			}
@@ -104,6 +104,30 @@ function vCard() {
 
 	}
 
+
+  this.putValueInObject = function(json, key, value, fields){
+    if(json[key]){
+      if(value.type && value.type.length > 0){
+        let found = value.type.find(t=>t.indexOf('=')!==-1) || value.type[0];
+        const newKey = key+'-'+found;
+        if(!json[newKey]){
+          json[newKey]=value;
+          return;
+        }
+      }
+      const split = fields[0].split(';');
+      for(let index in split){
+        const newKey = key+'-'+split[index];
+        if(!json[newKey]){
+          json[newKey]=value;
+          return;
+        }
+      };
+      json[key]=value;
+    }else{
+      json[key]=value;
+    }
+  }
 	/*
 	 * Parse the validated vCard data.
 	 * If an error occurs cb(err, null) get's called, otherwise cb(null, json)
@@ -118,7 +142,7 @@ function vCard() {
 			var fields = data[f].split(":");
 
 			/* Don't bother puting this fluff into the JSON. */
-			if (fields[0] === "BEGIN" || fields[0] === "END") {
+			if (fields[0].toUpperCase() === "BEGIN" || fields[0].toUpperCase() === "END") {
 				continue;
 			}
 
@@ -140,7 +164,7 @@ function vCard() {
 			var fields = data[f].split(":");
 
 			/* Don't bother puting this fluff into the JSON. */
-			if (fields[0] === "BEGIN" || fields[0] === "END") {
+			if (fields[0].toUpperCase() === "BEGIN" || fields[0].toUpperCase() === "END") {
 				continue;
 			}
 
@@ -177,16 +201,17 @@ function vCard() {
 				 * Some fields can be structured, but are still
 				 * just single. So test for that.
 				 */
+        let newVal;
 				if (type.length > 0) {
 					snippet.type = type;
 					snippet.value = fields[1];
-					json[d[0]] = snippet;
+          this.putValueInObject(json, d[0], snippet, fields);
 				} else {
 					/* Be sure to remove any left over control chars, but give a special treat to N */
 					if (d[0] === 'N') {
-						json[d[0]] = fields[1].replace(/;+$/g, '').replace(/;/, ', ').replace(/ $/, '');
+            this.putValueInObject(json, d[0], fields[1].replace(/;+$/g, '').replace(/;/, ', ').replace(/ $/, ''), fields);
 					} else {
-						json[d[0]] = fields[1].replace(/;/g, ' ');
+            this.putValueInObject(json, d[0], fields[1].replace(/;/g, ' '), fields);
 					}
 				}
 			} else if (version === 4) {
@@ -252,7 +277,7 @@ function vCard() {
 		var required_elements_found = 0;
 
 		/* Check for valid BEGIN/END fields. */
-		if (data[0] !== "BEGIN:VCARD" || data[data.length-1] !== "END:VCARD") {
+		if (data[0].toUpperCase() !== "BEGIN:VCARD" || data[data.length-1].toUpperCase() !== "END:VCARD") {
 			return 'BEGIN:VCARD or END:VCARD missing.';
 		}
 
