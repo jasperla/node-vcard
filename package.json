@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "description": "parse vCard into JSON",
   "homepage": "http://github.com/jasperla/node-vcard",
-  "author": {
-    "name": "Jasper Lievisse Adriaanse",
-    "email": "jasper@humppa.nl"
+  "author": "Jasper Lievisse Adriaanse <jasper@humppa.nl>, Mario Mol <mariohmol@gmail.com>",
+  "scripts": {
+    "compile": "tsc"
   },
   "license": "MIT/X11",
   "keywords": [
@@ -15,12 +15,15 @@
     "json"
   ],
   "dependencies": {
+    "fs": "0.0.1-security",
     "underscore": "*"
   },
   "engines": {
     "node": ">= 0.6.0"
   },
   "devDependencies": {
+    "@types/node": "^10.5.2",
+    "@types/underscore": "^1.8.8",
     "assert-plus": "*",
     "grunt": "~0.4.2",
     "grunt-contrib-watch": "~0.5.3",
