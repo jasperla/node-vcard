@@ -5,7 +5,8 @@
   "homepage": "http://github.com/jasperla/node-vcard",
   "author": "Jasper Lievisse Adriaanse <jasper@humppa.nl>, Mario Mol <mariohmol@gmail.com>",
   "scripts": {
-    "compile": "tsc"
+    "compile": "tsc",
+    "test": "grunt"
   },
   "license": "MIT/X11",
   "keywords": [

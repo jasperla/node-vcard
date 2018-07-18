@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as u from 'underscore';
 import * as validFields from './lib/fields';
 
-export class vCard {
+class vCard {
   /*
      * Read file from disk, validate and parse it.
      */
@@ -341,3 +341,5 @@ export class vCard {
     }
   };
 }
+
+export  = vCard;

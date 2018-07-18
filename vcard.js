@@ -1,5 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 var fs = require("fs");
 var u = require("underscore");
 var validFields = require("./lib/fields");
@@ -332,4 +331,4 @@ var vCard = /** @class */ (function () {
     ;
     return vCard;
 }());
-exports.vCard = vCard;
+module.exports = vCard;
