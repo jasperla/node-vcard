@@ -1,9 +1,7 @@
 "use strict";
 
 var fs            = require('fs');
-var path          = require('path');
 var u             = require('underscore');
-var util          = require('util');
 var validFields   = require('./lib/fields');
 
 function vCard() {
@@ -117,7 +115,7 @@ function vCard() {
 		for (var f = data.length-1; f >= 0; f--){
 			var fields = data[f].split(":");
 
-			/* Don't bother puting this fluff into the JSON. */
+			/* Don't bother putting this fluff into the JSON. */
 			if (fields[0] === "BEGIN" || fields[0] === "END") {
 				continue;
 			}
@@ -139,7 +137,7 @@ function vCard() {
 			/* XXX: Don't split on http:// .. */
 			var fields = data[f].split(":");
 
-			/* Don't bother puting this fluff into the JSON. */
+			/* Don't bother putting this fluff into the JSON. */
 			if (fields[0] === "BEGIN" || fields[0] === "END") {
 				continue;
 			}
