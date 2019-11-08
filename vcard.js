@@ -256,13 +256,13 @@ function vCard() {
 
 		/* Ensure at least the needed fields (VERSION, N and FN) exist, needed in all versions. */
 		for (var f = data.length-1; f >= 0; f--){
-			if (data[f].match(/^(VERSION|FN):/)) {
+			if (data[f].match(/^(VERSION|FN|N):/)) {
 				required_elements_found++;
 			}
 		}
 
-		if (required_elements_found != '2') {
-			return 'One or more required elements are missing (VERSION and FN)';
+		if (!(required_elements_found >= 2)) {
+			return 'One or more required elements are missing (VERSION, N or FN)';
 		}
 
 		var version = getVersion(data);
