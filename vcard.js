@@ -261,20 +261,20 @@ function vCard() {
 			}
 		}
 
-		if (!(required_elements_found >= 2)) {
+		if (required_elements_found < 2) {
 			return 'One or more required elements are missing (VERSION, N or FN)';
 		}
 
 		var version = getVersion(data);
 
 		/* For version 3.0+, we'll also need an N field to be present. */
-		if (version > '2.1') {
+		if (version > 2.1) {
 			for (var f = data.length-1; f >= 0; f--){
 				if (data[f].match(/^N:/)) {
 					required_elements_found++;
 				}
 			}
-			if (required_elements_found != '3') {
+			if (required_elements_found < 3) {
 				return 'One or more required elements are missing (VERSION, N and FN)';
 			}
 		}
