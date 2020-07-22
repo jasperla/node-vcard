@@ -1,6 +1,8 @@
 node-vcard
 ==========
 
+**This project is looking for a maintainer! Please open an issue if you'd like to over.**
+
 Introduction
 ------------
 
